@@ -1,0 +1,312 @@
+---
+title: "Mother’s Choice: Presence of Midwife Care and Use of the Birth Intervention Drug Pitocin"
+author: "Celeste Coughlin"
+date: "30/11/2021"
+output: 
+  html_document:
+    highlight: pygments
+    theme: spacelab
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(openintro)
+library(data.table)
+library(dplyr)
+library(huxtable)
+library(modelsummary)
+```
+
+------------------------------------------------------------------------
+
+# Abstract
+
+Based on survey responses from mothers who gave birth in the state of California in 2016, we analyzed the use of synthetic oxytocin (Pitocin) during birth and the ways in which Pitocin usage might change with differences in mothers' income, education, choice of care provider, and feelings on care providers after birth.
+
+**Hypothesis:** Among those who had a midwife or would have preferred to have a midwife the drug Pitocin is administered less.
+
+**Results:** We did not find a significant relationship between the birth providers, the preference of birth providers, and the use of Pitocin. The analysis does indicate a statistically significant relationship between education level and Pitocin use as well as education level and midwife preference. 
+
+# Introduction 
+The Childbirth Connection Programs at the National Partnership for Women & Families developed the Listening to Mothers 2016 survey and collected responses used in this project, (available here https://www.chcf.org/collection/listening-to-mothers-in-california/). This sample was collected because of 1 out of every 8 infants born in America is born in the state of California (Survey Factsheet 2018). The data set thus enables researchers to draw larger conclusions about pregnancy, maternal care, and  birth interventions in other areas across the country. 
+The  dependent variable Pitocin was selected to represent modern birth, the drug is present in birth settings which normally involve hospitals because it is delivered intravenously. This modern touch stone is compared to the role of other "nontraditional" birth choices and preferences within California-- the independent variable. Additional independent variables included are type of care provider,  birth interventions, income, and education. Mothers who responded gave birth in 2016, lived in California, and spoke either English or Spanish. The role of certain demographic data on birth choices is analyzed to acknowledge the choices of a mother in any birth setting being affected by socioeconomic and cultural factors. 
+
+We hypothesize that mothers with midwives or who wished they had a midwife as a provider had less medicalized intervention, specifically Pitocin, during their birth. 
+# History
+The difference in child delivery practices between obstetrics practitioners and midwives varies greatly. "Whilst it is difficult to categorise maternity models of care exclusively due to the influence of generic policies and guidelines, it is assumed that the underpinning philosophy of a midwife‐led model of care is normality and the natural ability of women to experience birth without routine intervention," (Sandall 2016). The interventions assessed here are modern birth interventions. As such, we focus on a highly medicalized practice: the use of Pitocin as a method of birth augmentation. Pitocin is an intravenously administered synthetic oxytocin which is meant to mimic the natural oxytocin produced by mothers during labor (Mansy 2017). This type of intervention impacts the experience of mothers in a well-documented manner thanks largely to surveys like Listening to Mothers 2016.
+
+To illustrate, first we have Caroline, a mother whose anecdote was chosen for this paper due to their similar shared experience with many other mothers. Caroline felt pressured into induction on her due date, and was told she would be fine. Caroline said in an interview:
+
+*"So she decided to induce me on my due date, and I really was opposed to that, just because like I told you I didn't want any medications and she insisted that it would be fine, no problem, this happens all the time, it's no big deal, and I just felt like from a health standpoint, once you have one intervention, it kind of snowballs into needing a bunch of other interventions and I didn't want that. And I really didn't want a C-section and then I didn't want an epidural, that kind of thing. And then from an honesty standpoint, I was worried about what she was telling my insurance company."* (Freund 2008)
+
+Comparatively, first time mother Jessica felt more comfortable with her doula who made sure to inform her about each step in the process being presented to her. She said in an interview:
+
+*"My doctor really didn't go into it so much with me about the lack of pain blocking hormones [when labor is induced], but my doula; she explained to me that it would be very difficult."* (Freund 2008).
+
+Research shows the "use of oxytocin in labor augmentation increases the volume of blood loss," (Mansy 2017). Use of synthetic oxytocin as a labor intervention practice was present in 27% of responses in our sample. These responses represent a key comparison point between our variables---still, experts insist "in low risk women, induction of labor, regardless of the method used, is associated with a higher risk of PPH [postpartum hemorrhage] than spontaneous labor" (Mansy 2017).
+
+Why may providers use Pitocin in the first place? Pitocin is developed perfectly mimic the naturally occurring oxytocin that is produced by activating the parasympathetic nervous system. Both the natural oxytocin and the synthetic Pitocin induce contractions necessary for labor. The parasympathetic system response is also responsible for the hormonal and chemical balance of the person giving birth. This is the fundamental difference: while the naturally occurring oxytocin comes from the pituitary gland it reduces anxiety, stress, and pain, the synthetic version of oxytocin does not cross the blood brain barrier and does not release the same stress and pain relieving hormones as naturally-occurring oxytocin. (Dekker 2020).  Pitocin, therefore, serves a highly physiological function in its ability to instigate uterine contractions but provides none of the psychological benefits. Administration of Pitocin can also be used to control a number of postpartum issues including inducing the delivery of the placenta and hemorrhaging.
+
+### Data
+
+The key variables selected and analyzed from the survey data are shown here:
+
+```{r, include = FALSE}
+Variable <- c("Q805", "Q815", "Q1111c", "Q1830b", "Q1860", "Q1865", "had_mid", "wish_mid", "pre_pit", "mid_pit")
+Explanation <- c("Which type of maternity care provider most often provided your care during pregnancy? [Answer: 4 - A midwife (could be called CNM)]", "Which type of provider do you wish you had? [Answer: 3 - (Midwife (CNM))]", "How did your maternity care provider try to start your labor? Please select all that apply. [Answer: 3 - Gave the medicine Pitocin (“pit” or oxytocin) through an IV drip before the start of labor contractions)", "Thinking of your recent pregnancy and birth, what are the total costs you have been asked to pay yourself for any of your maternity care providers and hospital bills for you and your baby? Please include bills already paid and bills owed. Please do not include the cost of buying your health insurance. If you are not sure, give your best guess.", "What is the highest level of education you have completed or the highest degree you have received?", "Which of the following income categories best describes your total 2016 household income before taxes? If you do not know, please give your best guess.", "Had a midwife during childbirth", "Wanted a midwife during childbirth", "Administered Pitocin before childbirth", "Administered Pitocin during childbirth")
+
+df <- data.frame(Variable, Explanation)
+```
+
+```{r}
+df
+```
+
+# Results
+
+## Descriptive Statistics
+
+### Figure 1
+
+Survey responses were analyzed descriptively, focusing on percentages of mothers who responded to questions in certain ways. In response to Q705, which asked respondents if they had a choice in their maternity care provider, about 20% of mothers stated they did not have a choice because their provider was assigned to them. Figure 1 shows that the majority of mothers who took this survey most often received care from an OB-GYN. This is consistent with findings from existing research, which point to the overall trend of medicalized birth settings. However, the second largest category of care providers reported in this survey was midwives. This also follows greater population trends.
+
+```{r}
+slices <- c(1976, 52, 97, 221, 145, 27)
+lbls <- c("OB-GYN", "Family Doctor","Midwife", "Nurse Practicioner", "Physicians Assistant", "Other")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct)
+lbls <- paste(lbls, "%", sep="")
+pie(slices, init.angle = 100,labels = lbls, main = "Q805: What type of maternity care provider did you have?")
+ 
+```
+
+### Figure 2
+
+```{r}
+slices <- c(92, 27, 142, 8, 2, 30)
+lbls <- c("OB-GYN", "Family Doctor","Midwife", "Nurse Practicioner", "Physicians Assistant", "Other")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct)
+lbls <- paste(lbls, "%", sep="")
+pie(slices, init.angle = 25,labels = lbls, main = "Q815: Which type of provider do you wish you had?", sub= "Respondents answered 1 (Yes) to Q811, Did you wish you had a different provider?")
+```
+### Figure 3
+Overall, 12% of survey respondents wished they had a different type of maternity care provider than the one they had. From Figure 2, it is shown that almost half of respondents who did want a different care provider wished they had a midwife. A followup question was asked (Q816) to evaluate possible reasons why mothers did not have a midwife if they preferred one. Figure 3 suggests that the most popular reason was that respondents did not think that their health insurance plan would cover the services of a midwife. Other highly cited reasons included: "Another type of maternity care provider was assigned to me" and "I needed a doctor because of my health problems". \### Figure 3
+
+```{r}
+H <- c(77, 20, 15, 21, 39, 29, 30, 33)
+N <- c("a", "b", "c", "d", "e", "f", "g", "h")
+lbls816 <- 
+  
+barplot(H,names.arg=N,xlab="Response", ylab="Number of respondents", col="grey", main="Q816: Why didn't you have a midwife as your maternity care provider?", sub= "Respondents that answered 3 (Midwife) for Q815, Which type of provider did you wish you had?", border="black")
+```
+
+**Key**
+
+a- I didn't think my health insurance plan paid for services of a midwife
+
+b- I didn't think that a midwife could practice in a hospital
+
+c- I didn't think that I could have an epidural with a midwife
+
+d- I didn't know what would happen if I needed a doctor (for example, for a c-section)
+
+e- Another type of maternity care provider was assigned to me
+
+f- A midwife was not available
+
+g- I needed a doctor because of my health problems
+
+h- Other reason
+
+### Figure 4
+
+Finally, descriptive statistics provided a visualization of birth interventions. Of survey respondents, 39% reported their maternity care provider attempted to induce labor in some way. Figure 4 represents the breakdown of labor starting methods employed by the birth provider present. 27% (n=673) of people who said that their labor was induced by their provider indicated that Pitocin was used. Comparatively, 34% (n=869) of mothers reported Pitocin use to hurry their birth in the later stages of labor.
+
+```{r}
+L <- c(394, 253, 673, 188, 51)
+M <- c("a", "b", "c", "d", "e")
+barplot(L,names.arg=M,xlab="Response", ylab="Number of respondents", col="grey", main="Q1111: How did your maternity care provider try to start your labor?", sub = "Respondents answered 1 (Yes) to Q1110, Did your maternity care provider try to induce your labor in any way?", border="black")
+```
+
+**Key**
+
+a- Inserted a finger in to the opening to my womb (cervix) to "sweep" or "strip" the membranes loose
+
+b- Broke and released my water before the start of labor contractions
+
+c- Gave the medicine Pitocin through an IV drip before the start of labor contractions
+
+d- Tried to start my labor some other way
+
+e- Not sure how
+
+## Regression Analysis
+
+```{r, include = FALSE}
+load("LTMdata.Public VersionFINAL.RData")
+listening_data <- table %>%
+    select(c(Q805,Q815,Q1111c,Q1130b, Q1860, Q1865)) 
+listening_data$had_mid <- ifelse(listening_data$Q805 == '4', 1, 0)
+listening_data$wish_mid <- ifelse(listening_data$Q815 == '3', 1, 0)
+listening_data$pre_pit <- ifelse(listening_data$Q1111c == '1', 1, 0)
+listening_data$mid_pit <- ifelse(listening_data$Q1130b == '1', 1, 0)
+```
+
+Relationship(s) were calculated over the most important variables including income, Pitocin usage, wanting a midwife, having a midwife, and education levels. These were analyzed and regressed in order to determine any sort of models and statistically significant factors.
+
+```{r}
+model1 <- lm(mid_pit ~ had_mid + wish_mid + Q1860 + Q1865, data = listening_data)
+huxreg(model1, statistics = c(N = "nobs", R2 = "r.squared"))
+```
+
+### Figure 5: The relationship between Pitocin-hurried birth and having a midwife.
+
+```{r, include = FALSE}
+fig_5 <- ggplot(data = na.omit(listening_data[,c("mid_pit", "had_mid")]), aes(y = jitter(mid_pit), x = (had_mid))) + 
+  geom_point(size = 5, alpha = .05) +
+  theme_classic() +
+  labs(x = "Had a Midwife", y = "Pitocin Used to Hurry Birth", title = "Relationship between Having a Midwife and Pitocin Hurried Birth") +
+  theme(axis.title = element_text(size = 15)) +
+  geom_smooth(method = "lm", se = TRUE, color = "black", fill = "blue")
+```
+
+```{r}
+fig_5
+```
+
+Upon looking at the graph and the data, it strongly indicates that the relationship between Pitocin-hurried births and the presence of having a midwife during birth was statistically insignificant. This is a result of our models possessing relatively low regression coefficients as well as R2 values. The estimated R2 value came out to be 0.066, or roughly 6.60% of the data can be explained by the model provided. For specifically having a Pitocin-hurried birth, having a midwife present during childbirth only had a factor of 0.052 as its regression coefficient, displaying to have almost no relation (zero). Though slightly positive, due to this incredibly small relation, it can be deemed to have relatively small statistical effect on the outcome.
+
+### Figure 6: The relationship between Pitocin-hurried births and wanting a midwife.
+
+```{r, include =FALSE}
+fig_6 <- ggplot(data = na.omit(listening_data[, c("mid_pit", "wish_mid")]), aes(y = jitter(mid_pit), x = (wish_mid))) + 
+  geom_point(size = 5, alpha = .05) +
+  theme_classic() +
+  labs(x = "Wanted a Midwife", y = "Pitocin Used to Hurry Birth", title = "Relationship between Wanting a Midwife and Pitocin Hurried Birth") +
+  theme(axis.title = element_text(size = 15)) +
+  geom_smooth(method = "lm", se = TRUE, color = "black", fill = "blue")
+```
+
+```{r}
+fig_6
+```
+
+Upon looking at the graph and the data, it strongly indicates that the relationship between Pitocin-hurried births and the retrospect of wanting a midwife during birth was statistically insignificant. This due to the fact of our models possessing relatively low regression coefficients as well as R2 values. The estimated R2 value came out to be 0.066, or roughly 6.60% of the data can be explained by the model provided. For specifically having a Pitocin-hurried birth, wanting a midwife present during childbirth only had a factor of -0.120 as its regression coefficient, displaying to have almost no relation (zero). Though slightly negative, due to this incredibly small relation, it can be deemed to have relatively small statistical effect on the outcome.
+
+### Figure 7a: The relationship between Pitocin-hurried births, education, and having a midwife.
+
+```{r, include =FALSE}
+fig_7a <- ggplot(data = na.omit(listening_data[, c("Q1860", "mid_pit", "had_mid")]), aes(x = jitter(Q1860), y = jitter(mid_pit))) + 
+  geom_point(aes(color = as.factor(had_mid)), size = 5, alpha = 0.2) +
+  theme_classic() +
+  labs(x = "Education Level", y = "Pitocin-Hurried Births", title = "Relationship between Pitocin-Hurried Births, Education Level, and Midwife") +
+  theme(axis.title = element_text(size = 15)) +
+  geom_smooth(method = "lm", se = TRUE, color = "black", fill = "blue")
+```
+
+```{r}
+fig_7a
+```
+
+### Figure 7b: The relationship between Pitocin-hurried births, education, and wanting a midwife.
+
+```{r, include =FALSE}
+fig_7b <- ggplot(data = na.omit(listening_data[, c("Q1860", "mid_pit", "wish_mid")]), aes(x = jitter(Q1860), y = jitter(mid_pit))) + 
+  geom_point(aes(color = as.factor(wish_mid)), size = 5, alpha = 0.2) +
+  theme_classic() +
+  labs(x = "Education Level", y = "Pitocin-Hurried Births", title = "Relationship between Pitocin-Hurried Births, Education Level, and wanting a Midwife") +
+  theme(axis.title = element_text(size = 14)) +
+  geom_smooth(method = "lm", se = TRUE, color = "black", fill = "blue")
+```
+
+```{r}
+fig_7b
+```
+
+Figures 7a and 7b will be interpreted simultaneously because they are nearly the same graph with an exception of factoring along having and wanting a midwife. The regression analysis indicates that the relationship between Pitocin-hurried births and the education level of the mother was statistically significant. Visual analysis of the graph shows that as education level increases (a scale from having some high school education to being college educated), it was more likely for Pitocin to be administered during birth. The graph also shows depictions of an education coefficient being 0.080, which was statistically significant at the 0.01 level when regressed with Pitocin-hurried births. The factoring of having and wanting a midwife, while perhaps not as informative as other variables, points to the likelihood of a relationship between wanting midwifery and education level.
+
+### Figure 8: The relationship between wanting a midwife and education level.
+
+```{r}
+model2 <- lm(wish_mid ~ mid_pit + Q1860 + Q1865, data = listening_data)
+huxreg(model2, statistics = c(N = "nobs", R2 = "r.squared"))
+```
+
+```{r, include =FALSE}
+fig_8 <- ggplot(data = na.omit(listening_data[, c("Q1860", "wish_mid")]), aes(x = (Q1860), y = jitter(wish_mid))) + 
+  geom_point(size = 5, alpha = 0.2) +
+  theme_classic() +
+  labs(x = "Education Level", y = "Wanting a Midwife", title = "Relationship between Wanting a Midwife and Education Level") +
+  theme(axis.title = element_text(size = 15)) +
+  geom_smooth(method = "lm", se = TRUE, color = "black", fill = "blue")
+```
+
+```{r}
+fig_8
+```
+
+In order to determine if there truly is a relationship between a mother's education level and wanting a midwife, we chose to run another linear model. However, in this case, wanting a midwife was regressed on administered Pitocin, education level, as well as income. While there was not a relationship significantly different from no treatment, the coefficient for income was 0.071, which was statistically significant at the p \< 0.01 level. This indicates as a mother's education is increased, mothers tend to prefer midwifery care. The new R2 variable is .108, which means that 10.8% of the variability of wanting a midwife can be explained by the amount of education a mother has experienced.
+
+### Figure 9a: The relationship between Pitocin-hurried births, income, and having a midwife.
+
+```{r, include =FALSE}
+fig_9a <- ggplot(data = na.omit(listening_data[, c("Q1865", "mid_pit", "had_mid")]), aes(x = (Q1865), y = jitter(mid_pit))) + 
+  geom_point(aes(color = as.factor(had_mid)),size = 5, alpha = 0.2) +
+  theme_classic() +
+  labs(x = "Income Level", y = "Pitocin-Hurried Births", title = "Relationship between Pitocin-hurried Births, Income Level, and Having a Midwife") +
+  theme(axis.title = element_text(size = 15)) +
+  geom_smooth(method = "lm", se = TRUE, color = "black", fill = "blue")
+```
+
+```{r}
+fig_9a
+```
+
+### Figure 9b: The relationship between Pitocin-hurried births, income, and wanting a midwife.
+
+```{r, include =FALSE}
+fig_9b <- ggplot(data = na.omit(listening_data[, c("Q1865", "mid_pit", "wish_mid", "Q1860")]), aes(x = (Q1865), y = jitter(mid_pit))) + 
+  geom_point(aes(color = as.factor(wish_mid)),size = 5, alpha = 0.2) +
+  theme_classic() +
+  labs(x = "Income Level", y = "Pitocin-Hurried Births", title = "Relationship between Pitocin Hurried Births, Income Level, and Wanting a Midwife") +
+  theme(axis.title = element_text(size = 15)) +
+  geom_smooth(method = "lm", se = TRUE, color = "black", fill = "blue")
+```
+
+```{r}
+fig_9b
+```
+
+Similar to 7a and 7b, we will look at 8a and 8b in a single interpretation given the similarities. Graph 8a and 8b are identical with the exception of the factoring of having a midwife and wanting a midwife. While the regression line may appear to be positively sloping, and therefore, indicative of a positive relationship between Pitocin-hurried births and income, the numbers of the linear regression model do not support such an inference. In fact, the coefficient of Pitocin-hurried births regressed on income, education, and having a midwife is in fact negative, with a value of -0.005. Therefore, there is not a significant relationship between hurried births and income.
+
+# Limitations and Other Factors
+
+There remains the aspect of experimental externalities; some variables and their resulting effects are not completely accounted for within the experiment. Just from the data collection method alone, noted limitations were observed. The data was only collected in the state of California, only by those that could speak Spanish and/or English, had a child during 2016, had a way of responding to a survey over phone call, and responded back to the Listening To Mothers Survey. All of which more narrowly refining the scope instead of providing overall models and data applicable to all mothers. Though it can be initially deemed that California is a good state to run an experiment of this type on due to factors such as race, income, education, sheer population, and other measures, it still does not encompass every type of mother or birth-practice. Furthermore, all participants had to be over the age of 18, and because mothers can have children below that age, that also omits a group of individuals that can influence our final data. In fact, nearly 13% of all mothers in America are below the age of 18 (Pew Research Center 2018).
+
+The age gap omission and the barriers to providing survey data such as the ability and time to give a phone call can drastically alter the income variables ran in our analyses as well. As both people who are under the age of 18 or those who do not possess the ability or money to have a cell phone could reasonably be assumed to have lower income than those who are above 18 and have capabilities of giving survey data via phone call. The Spanish/English barrier eliminates mothers who don't belong to such a category from giving their data at all, influencing our estimations in multiple regards; as non Spanish/English speaking people have wide varied incomes and educational levels. Lastly, as seen in the Listening To Mothers Survey Data itself, for many of the administration or birth-practice questions, the answer of "I don't know" was a choice. Though not necessarily medical malpractice, we do know that  consent during birth is often forgotten or disregarded, especially when performed outside the midwife model of care. 
+
+From either language barriers, mental awareness of the mother, or other conditions we can conclude that mothers might not be able to remember choices or were not adequately informed about the actions of their provider. Because of this, the magnitude of any effect analyzed in birth is difficult to determine.
+
+# Conclusion
+
+The initial hypothesis was incorrect but this experiment resulted in limited statistically significant relationships between the educational level of the mother and Pitocin usage, as well as either midwifery presence or the desire for midwifery care. Though the styles and practices involved in childbirth may have changed over time, there is still a deep connection to be explored between the mother, their background, and the models of care which bring children into the world. 
+
+# References
+
+Evidence on: Pitocin® During the Third Stage of Labor. (2020, June 23). Evidence Based Birth®. <https://evidencebasedbirth.com/evidence-on-pitocin-during-the-third-stage-of-labor/>
+
+Hermann, A. (n.d.). Managing Labor with Pitocin: Medical Discourse and Decision-Making in Contemporary Clinical Settings. 99.
+
+In Defense of Normal Birth. (2019, September 26). The Midwives Of New Jersey. <https://midwivesofnj.com/in-defense-of-normal-birth/>
+
+Mansy, A. (2017). Does Labor Augmentation with Oxytocin Increase the Risk of Postpartum Hemorrhage? A Randomized Controlled Trial. Clinics in Mother and Child Health, 14(3). <https://doi.org/10.4172/2090-7214.1000268>
+
+Pew Research Center. (2018, January 10). Women are delaying motherhood through their 20s. Pew Research Center's Social & Demographic Trends Project. Retrieved November 30, 2021, from <https://www.pewresearch.org/social-trends/2018/01/18/theyre-waiting-longer-but-u-s-women-today-more-likely-to-have-children-than-a-decade-ago/pstl_1-18-18-motherhood-01/>
+
+Thesis Expectations and Experiences of First-Time Mothers, Andrea Freund.pdf. (n.d.). Retrieved November 30, 2021, from <https://scholarworks.iupui.edu/bitstream/handle/1805/1669/Thesis%20Expectations%20and%20Experiences%20of%20First-Time%20Mothers,%20Andrea%20Freund.pdf?sequence=2>
